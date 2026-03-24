@@ -1,3 +1,3 @@
 # Casa Inteligenta
 
-## Etc
+schimbare
