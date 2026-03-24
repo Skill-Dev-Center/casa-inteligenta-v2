@@ -1,3 +1,1 @@
 # Casa Inteligenta
-
-## Etc
