@@ -3,18 +3,14 @@
 #include <SPI.h>
 #include <Wire.h>
 #include <Servo.h>
-#include<DHT.h>
-#include<LiquidCrystal_I2C.h>
-
-
-Servo CADOURI_servomotor;
-
+#include <DHT.h>
+#include <LiquidCrystal_I2C.h>
 
 const int CADOURI_SERVO_PIN = 4;
 const int CADOURI_BTN_PIN = 5;
+const int DHT_PIN = 7;
 
 int CADOURI_unghi = 0;
-int DHT_PIN = 11;
 
 LiquidCrystal_I2C lcd(0x27,16,2);
 DHT dht(DHT_PIN, DHT11);
@@ -25,25 +21,24 @@ DHT dht(DHT_PIN, DHT11);
 
 MFRC522 rfid(RFID_SS_PIN, RFID_RST_PIN);
 Servo servoMotor;
+Servo CADOURI_servomotor;
 
 String cardPermis[] = {"13", "93", "4B", "F5"};
 
 void setup() {
-  setup_usa_garaj();
-  setup_usa_intrare();
-  cadouri_surpriza_setup();
   setup_temp_sensors();
+  setup_usa_garaj();
+  cadouri_surpriza_setup();
 }
 
 void loop() {
-  loop_usa_garaj();
-  loop_usa_intrare();
   cadouri_surpriza_loop();
   loop_temp_sensors();
+  loop_usa_garaj();
 }
 
 void setup_usa_garaj() {
-    Serial.begin(9600);
+  Serial.begin(9600);
 
   // Pornim RFID-ul
   SPI.begin();
@@ -65,7 +60,6 @@ void loop_usa_intrare() {
 }
 
 void cadouri_surpriza_setup() {
-  Serial.begin(9600);
   CADOURI_servomotor.attach(CADOURI_SERVO_PIN);
   CADOURI_servomotor.write(CADOURI_unghi);
   delay(2000);
@@ -121,6 +115,8 @@ void loop_usa_garaj() {
 }
 
 void cadouri_surpriza_loop() {
+   CADOURI_servomotor.write(CADOURI_unghi);
+
    if (digitalRead(CADOURI_BTN_PIN) == LOW){
 
     CADOURI_unghi = 180;
@@ -128,7 +124,7 @@ void cadouri_surpriza_loop() {
 
   }
 
-  CADOURI_servomotor.write(CADOURI_unghi);
+ 
   
   if (digitalRead(CADOURI_BTN_PIN) == HIGH){
 
@@ -139,23 +135,23 @@ void cadouri_surpriza_loop() {
 }
 
 void setup_temp_sensors() {
-delay(100);
-lcd.init();
-dht.begin();
-lcd.backlight();
+  delay(100);
+  lcd.init();
+  dht.begin();
+  lcd.backlight();
 }
 
 void loop_temp_sensors() {
  
-float temperatura =dht.readTemperature();
-float umiditate = dht.readHumidity();
+  float temperatura =dht.readTemperature();
+  float umiditate = dht.readHumidity();
 
-lcd.clear();
-lcd.print("Temp:");
-lcd.print(temperatura);
-lcd.setCursor(0,1);
-lcd.print("umid:");
-lcd.print(umiditate);
-delay(1000);
+  lcd.clear();
+  lcd.print("Temp:");
+  lcd.print(temperatura);
+  lcd.setCursor(0,1);
+  lcd.print("umid:");
+  lcd.print(umiditate);
+  delay(1000);
 
 }
